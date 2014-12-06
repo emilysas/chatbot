@@ -12,13 +12,7 @@
 require 'colorize'
 
 def get_response(input)
-  key = RESPONSES.keys.select {|k| /#{k}/ =~ input }.sample 
-  /#{key}/ =~ input
-  response = RESPONSES[key]
-  response.nil? ? 'sorry?' : response % { c1: $1, c2: $2, c3: $3, c4: $4, c5: $5}
-end
-
-RESPONSES = { 'goodbye' => 'bye',
+  responses = { 'goodbye' => 'bye',
               'sayonara' => 'sayonara',
               'the weather is (.*)' => 'I hate it when it\'s %{c1}',
               'I love (.*)' => 'I love %{c1} too',
@@ -28,8 +22,19 @@ RESPONSES = { 'goodbye' => 'bye',
           	  'I could talk to you all night' => 'That\'s sweet, but I\'m afraid I have better things to do.',
           	  'What\'ve you been upto today?' => 'Oh you know, same old same old',
           	  'This conversation is getting a bit (.*)' => '%{c1}! I don\'t know whether to be insulted or flattered',
-          	  'What\'re you doing tonight?' => 'Erm, washing my hair.'
-          	}
+          	  'What\'re you doing tonight?' => 'Erm, washing my hair.'}
+          	  
+  answers = ["I get what you're saying", "Really?", "I totally understand", "I'm hearing you", "It's interesting you say that", "I don't follow you"]
+
+  key = responses.keys.select {|k| /#{k}/ =~ input }.sample 
+  /#{key}/ =~ input
+  response = responses[key]
+    if response.nil? 
+      responses.store(input, answers.sample)
+    else 
+      response % { c1: $1, c2: $2, c3: $3, c4: $4, c5: $5}
+    end
+end
 
 puts "bot: Hello, what's your name?".blue
 print "you: "
@@ -38,9 +43,9 @@ puts "bot: Hello #{name}".blue
 print "you: "
 
 
- while(input = gets.chomp) do
-   if input == "quit"
-	exit
+while(input = gets.chomp) do
+  if input == "quit"
+    exit
   else
   	puts "bot: ".blue+get_response(input).blue
   	print "you: "
