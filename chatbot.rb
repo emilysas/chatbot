@@ -24,13 +24,18 @@ require 'colorize'
 
 def get_response(input)
           	  
-  answers = ["I get what you're saying", "Really?", "I totally understand", "I'm hearing you", "It's interesting you say that", "I don't follow you"]
+  answers = ["I get what you're saying", "Really?", "I totally understand", "I'm hearing you", "It's interesting you say that", "I don't follow you", "Hmmm, this conversation is going nowhere", "Yaaaaawn.... what were you saying?"]
+  answering_questions = ["I'm not sure it's appropriate for you to ask me that!", "Why do you ask?", "Is that really something you're interested in finding out?", "I don't really see the point of your question?", "Is this an interrogation?"]
 
   key = RESPONSES.keys.select {|k| /#{k}/ =~ input }.sample 
   /#{key}/ =~ input
   response = RESPONSES[key]
-    if response.nil? 
-      RESPONSES.store(input, answers.sample)
+    if response.nil?
+      if input.match(/\?/)
+        RESPONSES.store(input, answering_questions.sample)
+      else 
+      	RESPONSES.store(input, answers.sample)
+      end
     else 
       response % { c1: $1, c2: $2, c3: $3, c4: $4, c5: $5}
     end
