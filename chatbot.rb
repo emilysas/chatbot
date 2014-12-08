@@ -59,15 +59,11 @@ def open_file
 end
 
 open_file
-puts "RESPONSES: #{RESPONSES}"
-puts "full_responses: #{@full_responses}"
-puts "new_responses: #{@new_responses}"
-
 puts "bot: Hello, what's your name?".blue
-print "you: "
-name = gets.chomp
-puts "bot: Hello #{name}".blue
-print "you: "
+print "Enter name: "
+@name = gets.chomp
+puts "bot: Hello #{@name}".blue
+print "#{@name}: "
 
 
 while(input = gets.chomp) do
@@ -78,6 +74,6 @@ while(input = gets.chomp) do
     exit
   else
   	puts "bot: ".blue + "#{get_response(input)}".blue
-  	print "you: "
+  	print "#{@name}: "
   end
 end
