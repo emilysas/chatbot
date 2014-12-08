@@ -24,6 +24,9 @@ RESPONSES = { 'goodbye' => 'bye',
           	  'What is your name?' => 'I go by chatbot',
           	  'What sort of music do you like?' => 'Well I\'m a computer programme, so I\'m going to go ahead and say electronic music'}
 
+@full_responses = RESPONSES
+@new_responses = {}
+
 
 require 'colorize'
 
@@ -32,14 +35,14 @@ def get_response(input)
   answers = ["I get what you're saying", "Really?", "I totally understand", "I'm hearing you", "It's interesting you say that", "I don't follow you", "Hmmm, this conversation is going nowhere", "Yaaaaawn.... what were you saying?"]
   answering_questions = ["I'm not sure it's appropriate for you to ask me that!", "Why do you ask?", "Is that really something you're interested in finding out?", "I don't really see the point of your question?", "Is this an interrogation?"]
 
-  key = RESPONSES.keys.select {|k| /#{k}/ =~ input }.sample 
+  key = @full_responses.keys.select {|k| /#{k}/ =~ input }.sample 
   /#{key}/ =~ input
-  response = RESPONSES[key]
+  response = @full_responses[key]
     if response.nil?
       if input.match(/\?/)
-        RESPONSES.store(input, answering_questions.sample)
+        @new_responses.store(input, answering_questions.sample)
       else 
-      	RESPONSES.store(input, answers.sample)
+      	@new_responses.store(input, answers.sample)
       end
     else 
       response % { c1: $1, c2: $2, c3: $3, c4: $4, c5: $5}
@@ -47,15 +50,19 @@ def get_response(input)
 end
 
 def open_file
-  	file = File.open("responses.rb")
+  	file = File.open("responses.csv")
   	file.readlines.each do |line|
       key, value = line.chomp.split(',')
-      RESPONSES.store(key, value)
+      @full_responses.store(key, value)
       file.close
 	end
 end
 
 open_file
+puts "RESPONSES: #{RESPONSES}"
+puts "full_responses: #{@full_responses}"
+puts "new_responses: #{@new_responses}"
+
 puts "bot: Hello, what's your name?".blue
 print "you: "
 name = gets.chomp
@@ -65,8 +72,8 @@ print "you: "
 
 while(input = gets.chomp) do
   if input == "quit"
-  	file = File.open("responses.rb", "w")
-    file.puts RESPONSES
+  	file = File.open("responses.csv", "w")
+    file.puts @new_responses
     file.close
     exit
   else
